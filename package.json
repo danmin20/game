@@ -11,8 +11,16 @@
     "server": "yarn workspace server",
     "client:dev": "yarn client vite",
     "client:build": "yarn client tsc && yarn client vite build",
-    "server:start": "yarn server nest start",
-    "server:start:dev": "yarn server nest start --watch"
+    "server:dev": "yarn server nest start --watch",
+    "server:start": "yarn server nest start"
   },
-  "packageManager": "yarn@3.2.4"
+  "packageManager": "yarn@3.2.4",
+  "dependencies": {
+    "@nestjs/platform-ws": "^9.2.0",
+    "@nestjs/websockets": "^9.2.0",
+    "ws": "^8.11.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.3"
+  }
 }

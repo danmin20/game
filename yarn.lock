@@ -1046,6 +1046,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nestjs/platform-ws@npm:^9.2.0":
+  version: 9.2.0
+  resolution: "@nestjs/platform-ws@npm:9.2.0"
+  dependencies:
+    tslib: 2.4.1
+    ws: 8.11.0
+  peerDependencies:
+    "@nestjs/common": ^9.0.0
+    "@nestjs/websockets": ^9.0.0
+    rxjs: ^7.1.0
+  checksum: 1aa942cfa2a4cf74bdbcd1f0bfa8ea8bc920feea93da4b4e309ff4053a2de99625541f9e28674c57129fc94bbfc2202218fe73513adce063294d9510b4ec03f4
+  languageName: node
+  linkType: hard
+
 "@nestjs/schematics@npm:^9.0.0":
   version: 9.0.3
   resolution: "@nestjs/schematics@npm:9.0.3"
@@ -1077,6 +1091,26 @@ __metadata:
     "@nestjs/platform-express":
       optional: true
   checksum: 4d5bee7fbb35052658cf6ce4b4177c281d98ce43e091b607cd32784c94430bf7e2d2b27bf49a4d16df4171947ae148c28898240df087985c794a10dd2f4c54df
+  languageName: node
+  linkType: hard
+
+"@nestjs/websockets@npm:^9.2.0":
+  version: 9.2.0
+  resolution: "@nestjs/websockets@npm:9.2.0"
+  dependencies:
+    iterare: 1.2.1
+    object-hash: 3.0.0
+    tslib: 2.4.1
+  peerDependencies:
+    "@nestjs/common": ^9.0.0
+    "@nestjs/core": ^9.0.0
+    "@nestjs/platform-socket.io": ^9.0.0
+    reflect-metadata: ^0.1.12
+    rxjs: ^7.1.0
+  peerDependenciesMeta:
+    "@nestjs/platform-socket.io":
+      optional: true
+  checksum: 4900e53e02c1d89ce9737c08585a52fec2b51a6240c6eada98a36f5137ada49de42ade2768909e7a11bbffd9e60ac5e32664a69fffbcd80365ae15bec97ae511
   languageName: node
   linkType: hard
 
@@ -1498,6 +1532,15 @@ __metadata:
   dependencies:
     "@types/superagent": "*"
   checksum: f0e2b44f86bec2f708d6a3d0cb209055b487922040773049b0f8c6b557af52d4b5fa904e17dfaa4ce6e610172206bbec7b62420d158fa57b6ffc2de37b1730d3
+  languageName: node
+  linkType: hard
+
+"@types/ws@npm:^8.5.3":
+  version: 8.5.3
+  resolution: "@types/ws@npm:8.5.3"
+  dependencies:
+    "@types/node": "*"
+  checksum: 0ce46f850d41383fcdc2149bcacc86d7232fa7a233f903d2246dff86e31701a02f8566f40af5f8b56d1834779255c04ec6ec78660fe0f9b2a69cf3d71937e4ae
   languageName: node
   linkType: hard
 
@@ -3811,6 +3854,11 @@ __metadata:
 "game@workspace:.":
   version: 0.0.0-use.local
   resolution: "game@workspace:."
+  dependencies:
+    "@nestjs/platform-ws": ^9.2.0
+    "@nestjs/websockets": ^9.2.0
+    "@types/ws": ^8.5.3
+    ws: ^8.11.0
   languageName: unknown
   linkType: soft
 
@@ -7372,6 +7420,21 @@ __metadata:
     imurmurhash: ^0.1.4
     signal-exit: ^3.0.7
   checksum: 5da60bd4eeeb935eec97ead3df6e28e5917a6bd317478e4a85a5285e8480b8ed96032bbcc6ecd07b236142a24f3ca871c924ec4a6575e623ec1b11bf8c1c253c
+  languageName: node
+  linkType: hard
+
+"ws@npm:8.11.0, ws@npm:^8.11.0":
+  version: 8.11.0
+  resolution: "ws@npm:8.11.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ^5.0.2
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 316b33aba32f317cd217df66dbfc5b281a2f09ff36815de222bc859e3424d83766d9eb2bd4d667de658b6ab7be151f258318fb1da812416b30be13103e5b5c67
   languageName: node
   linkType: hard
 
