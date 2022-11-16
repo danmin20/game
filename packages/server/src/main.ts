@@ -1,12 +1,20 @@
 import { NestFactory } from '@nestjs/core';
-import { WsAdapter } from '@nestjs/platform-ws';
+// import cookieParser from "cookie-parser";
 import { AppModule } from './app.module';
+import { SocketAdapter } from './socket/socket.adapter';
+
+const allowOrigins = ['*'];
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.useWebSocketAdapter(new WsAdapter(app));
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: allowOrigins,
+      credentials: true,
+    },
+  });
+  app.useWebSocketAdapter(new SocketAdapter(app));
+  // app.use(cookieParser());
 
-  await app.listen(3000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  await app.listen(9001);
 }
 bootstrap();

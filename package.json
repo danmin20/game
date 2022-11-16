@@ -14,13 +14,5 @@
     "server:dev": "yarn server nest start --watch",
     "server:start": "yarn server nest start"
   },
-  "packageManager": "yarn@3.2.4",
-  "dependencies": {
-    "@nestjs/platform-ws": "^9.2.0",
-    "@nestjs/websockets": "^9.2.0",
-    "ws": "^8.11.0"
-  },
-  "devDependencies": {
-    "@types/ws": "^8.5.3"
-  }
+  "packageManager": "yarn@3.2.4"
 }
