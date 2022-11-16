@@ -2,11 +2,10 @@
   "extends": "../../tsconfig.base",
   "compilerOptions": {
     "target": "ESNext",
+    "module": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": false,
     "skipLibCheck": true,
-    "module": "ESNext",
     "noEmit": true
   },
   "include": ["src"],
