@@ -9,7 +9,7 @@ import { Server, Socket } from 'socket.io';
 import { setInitDTO } from 'src/common/dto/chat.dto';
 import { ChatRoomService } from './chatroom.service';
 
-@WebSocketGateway(5000, {
+@WebSocketGateway(80, {
   transports: ['websocket'],
   cors: {
     origin: '*',
