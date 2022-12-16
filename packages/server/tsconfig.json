@@ -8,12 +8,14 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "rootDir": ".",
+    "baseUrl": ".",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
   },
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["dist"]
 }

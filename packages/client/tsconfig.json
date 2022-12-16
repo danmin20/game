@@ -6,7 +6,10 @@
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "skipLibCheck": true,
-    "noEmit": true
+    "noEmit": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "baseUrl": "."
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
