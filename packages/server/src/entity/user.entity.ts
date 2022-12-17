@@ -15,14 +15,14 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 50, comment: 'id' })
-  user_id: string;
+  @Column({ type: 'varchar', length: 50, comment: 'email' })
+  email: string;
 
-  @Column({ type: 'varchar', length: 255, comment: 'password' })
-  password: string;
+  @Column({ type: 'varchar', length: 30, comment: 'provider' })
+  provider: string;
 
-  @Column({ type: 'varchar', length: 255, comment: 'salt' })
-  salt: string;
+  @Column({ type: 'varchar', length: 30, comment: 'providerId' })
+  providerId: string;
 
   @Column({ type: 'varchar', length: 30, comment: 'name' })
   name: string;
