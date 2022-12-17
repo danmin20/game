@@ -1,10 +1,21 @@
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from '../user/dto/user.dto';
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+  // 로그인
+  async findByLogin(user_id: string, password: string): Promise<User> {
+    const user = await this.findOne({ where: { user_id, password } });
+
+    if (!user) {
+      throw new ForbiddenException('아이디와 비밀번호를 다시 확인해주세요.');
+    }
+
+    return user;
+  }
+
   //유저 생성
   async onCreate(createUserDto: CreateUserDto): Promise<boolean> {
     const { user_id, password, name, nickname } = createUserDto;
