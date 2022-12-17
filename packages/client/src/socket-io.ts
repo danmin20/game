@@ -1,7 +1,39 @@
+import { createContext } from "react";
 import { io } from "socket.io-client";
+import { SOCKET_EVENT } from "./const";
 
-const socket = io("localhost:80", {
+export const socket = io("localhost:80", {
   transports: ["websocket"],
+});
+
+export const myInfo = {
+  nickname: "",
+  id: "",
+  room: {
+    roomId: "",
+    roomName: "",
+  },
+};
+
+socket.on("connect", () => {
+  console.log("socket server connected.");
+
+  //연결 완료 후 로컬스토리지를 확인하여 닉네임 세팅
+  const nickname = localStorage.getItem("nickname");
+  socket.emit(
+    SOCKET_EVENT.SET_INIT,
+    { nickname },
+    (response: typeof myInfo) => {
+      myInfo.nickname = response.nickname;
+      myInfo.id = socket.id;
+      myInfo.room = response.room;
+    }
+  );
+  socket.emit(SOCKET_EVENT.GET_CHATROOM_LIST, null);
+});
+
+socket.on("disconnect", () => {
+  console.log("socket server disconnected.");
 });
 
 export const initSocketConnection = () => {
@@ -9,33 +41,7 @@ export const initSocketConnection = () => {
   socket.connect();
 };
 
-// 이벤트 명을 지정하고 데이터를 보냄
-export const sendSocketMessage = (cmd: string, body: any = null) => {
-  if (socket == null || socket.connected === false) {
-    initSocketConnection();
-  }
-  socket.emit("message", {
-    cmd,
-    body,
-  });
-};
-
-const cbMap = new Map();
-
-// 해당 이벤트를 받고 콜백 함수를 실행함
-export const socketInfoReceived = (cbType: string, cb: () => void) => {
-  cbMap.set(cbType, cb);
-
-  if (socket.hasListeners("message")) {
-    socket.off("message");
-  }
-
-  socket.on("message", (ret) => {
-    for (const [, cbValue] of cbMap) {
-      cbValue(null, ret);
-    }
-  });
-};
+export const SocketContext = createContext(socket);
 
 // 소켓 연결을 끊음
 export const disconnectSocket = () => {

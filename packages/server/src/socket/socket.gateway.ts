@@ -6,6 +6,7 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { SOCKET_EVENT } from 'src/common/const';
 import { setInitDTO } from 'src/common/dto/chat.dto';
 import { ChatRoomService } from './chatroom.service';
 
@@ -37,7 +38,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
       this.ChatRoomService.deleteChatRoom(roomId);
       this.server.emit(
-        'getChatRoomList',
+        SOCKET_EVENT.GET_CHATROOM_LIST,
         this.ChatRoomService.getChatRoomList(),
       );
     }
@@ -45,10 +46,10 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   //메시지가 전송되면 모든 유저에게 메시지 전송
-  @SubscribeMessage('sendMessage')
+  @SubscribeMessage(SOCKET_EVENT.SEND_MESSAGE)
   sendMessage(client: Socket, message: string): void {
     client.rooms.forEach((roomId) =>
-      client.to(roomId).emit('getMessage', {
+      client.to(roomId).emit(SOCKET_EVENT.RECEIVE_MESSAGE, {
         id: client.id,
         nickname: client.data.nickname,
         message,
@@ -57,7 +58,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   //처음 접속시 닉네임 등 최초 설정
-  @SubscribeMessage('setInit')
+  @SubscribeMessage(SOCKET_EVENT.SET_INIT)
   setInit(client: Socket, data: setInitDTO): setInitDTO {
     // 이미 최초 세팅이 되어있는 경우 패스
     if (client.data.isInit) {
@@ -83,7 +84,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('setNickname')
   setNickname(client: Socket, nickname: string): void {
     const { roomId } = client.data;
-    client.to(roomId).emit('getMessage', {
+    client.to(roomId).emit(SOCKET_EVENT.RECEIVE_MESSAGE, {
       id: null,
       nickname: '안내',
       message: `"${client.data.nickname}"님이 "${nickname}"으로 닉네임을 변경하셨습니다.`,
@@ -92,13 +93,16 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   //채팅방 목록 가져오기
-  @SubscribeMessage('getChatRoomList')
+  @SubscribeMessage(SOCKET_EVENT.GET_CHATROOM_LIST)
   getChatRoomList(client: Socket) {
-    client.emit('getChatRoomList', this.ChatRoomService.getChatRoomList());
+    client.emit(
+      SOCKET_EVENT.GET_CHATROOM_LIST,
+      this.ChatRoomService.getChatRoomList(),
+    );
   }
 
   //채팅방 생성하기
-  @SubscribeMessage('createChatRoom')
+  @SubscribeMessage(SOCKET_EVENT.CREATE_CHATROOM)
   createChatRoom(client: Socket, roomName: string) {
     //이전 방이 만약 나 혼자있던 방이면 제거
     if (
@@ -116,7 +120,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   //채팅방 들어가기
-  @SubscribeMessage('enterChatRoom')
+  @SubscribeMessage(SOCKET_EVENT.ENTER_CHATROOM)
   enterChatRoom(client: Socket, roomId: string) {
     //이미 접속해있는 방 일 경우 재접속 차단
     if (client.rooms.has(roomId)) {
