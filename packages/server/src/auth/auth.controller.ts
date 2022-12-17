@@ -17,14 +17,16 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleCallback(
     @Req() req: Request & { user: GoogleUser },
-    @Res() res: Response,
+    @Res() res: any,
   ) {
     const user = await this.authService.findByProviderIdOrSave(req.user);
 
     const payload: JwtPayload = { sub: user.id, email: user.email };
 
-    const { accessToken, refreshToken } = this.authService.getToken(payload);
-
-    // ...
+    const { accessToken } = this.authService.getToken(payload);
+    console.log('accessToken', accessToken);
+    if (accessToken)
+      res.redirect('http://localhost:5173/login/success/' + accessToken);
+    else res.redirect('http://localhost:5173/login/failure');
   }
 }

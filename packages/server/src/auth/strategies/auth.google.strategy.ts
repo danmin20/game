@@ -6,9 +6,9 @@ import { Strategy, Profile } from 'passport-google-oauth20';
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor() {
     super({
-      clientID: process.env.OAUTH_GOOGLE_ID,
-      clientSecret: process.env.OAUTH_GOOGLE_SECRET,
-      callbackURL: process.env.OAUTH_GOOGLE_REDIRECT,
+      clientID: process.env.OAUTH_GOOGLE_CLIENT_ID,
+      clientSecret: process.env.OAUTH_GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.OAUTH_GOOGLE_CALLBACK_URL,
       scope: ['email', 'profile'],
     });
   }

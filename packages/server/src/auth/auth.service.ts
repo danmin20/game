@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(Repository<User>)
+    @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
@@ -28,21 +28,17 @@ export class AuthService {
     newUser.providerId = providerId;
     newUser.email = email;
     newUser.name = name;
+    newUser.nickname = '';
 
     return await this.userRepository.save(newUser);
   }
 
   getToken(payload: JwtPayload) {
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: '2h',
-      secret: process.env.JWT_SECRET,
-    });
-
-    const refreshToken = this.jwtService.sign(payload, {
       expiresIn: '7d',
       secret: process.env.JWT_SECRET,
     });
 
-    return { accessToken, refreshToken };
+    return { accessToken };
   }
 }

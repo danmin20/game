@@ -1,23 +1,17 @@
 import { Module } from '@nestjs/common';
 import { SocketGateway } from './socket/socket.gateway';
 import { ChatRoomService } from './socket/chatroom.service';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { env } from 'process';
-import { AuthService } from './auth/auth.service';
-import { JwtStrategy } from './auth/strategies/auth.jwt.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeORMConfig } from './config/typeorm.config';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    PassportModule,
-    JwtModule.register({
-      //토큰 서명 값 설정
-      secret: env.JWT_SECRET,
-      //토큰 유효시간 (임의 60초)
-      signOptions: { expiresIn: '60s' },
-    }),
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot(typeORMConfig),
+    AuthModule,
   ],
-  providers: [SocketGateway, ChatRoomService, AuthService, JwtStrategy],
-  exports: [AuthService],
+  providers: [SocketGateway, ChatRoomService],
 })
-export class AuthModule {}
+export class AppModule {}

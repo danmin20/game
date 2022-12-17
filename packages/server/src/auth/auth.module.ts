@@ -5,12 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
 import { GoogleStrategy } from './strategies/auth.google.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
 import { User } from 'src/entity/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Repository<User>]),
+    TypeOrmModule.forFeature([User]),
     PassportModule,
     JwtModule.register({}),
   ],
