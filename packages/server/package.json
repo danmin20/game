@@ -20,15 +20,20 @@
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
+    "@nestjs/mapped-types": "^1.2.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/platform-socket.io": "^9.2.0",
     "@nestjs/platform-ws": "^9.2.0",
     "@nestjs/serve-static": "^3.0.0",
+    "@nestjs/typeorm": "^9.0.1",
     "@nestjs/websockets": "^9.2.0",
+    "class-validator": "^0.14.0",
+    "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "socket.io-client": "^4.5.3",
+    "typeorm": "^0.3.11",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

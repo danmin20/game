@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { SOCKET_EVENT } from 'src/common/const';
-import { setInitDTO } from 'src/common/dto/chat.dto';
+import { setInitDTO } from 'src/socket/dto/chat.dto';
 import { ChatRoomService } from './chatroom.service';
 
 @WebSocketGateway(80, {

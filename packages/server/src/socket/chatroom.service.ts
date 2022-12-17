@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { SOCKET_EVENT } from 'src/common/const';
 import { v4 as uuidv4 } from 'uuid';
-import { chatRoomListDTO } from '../common/dto/chat.dto';
+import { chatRoomListDTO } from './dto/chat.dto';
 
 @Injectable()
 export class ChatRoomService {
