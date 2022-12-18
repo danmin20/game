@@ -13,7 +13,7 @@ async function bootstrap() {
     },
   });
   app.useWebSocketAdapter(new SocketAdapter(app));
-  // app.use(cookieParser());
+  app.enableCors();
 
   await app.listen(9001);
 }

@@ -1,11 +1,21 @@
+import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { getNickname } from "./api/user";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import { useRecoilValue } from "recoil";
-import { accessTokenAtom } from "./atoms/accessToken";
+import LoginSuccess from "./pages/LoginSuccess";
 
 const App = () => {
-  const accessToken = useRecoilValue(accessTokenAtom);
+  const accessToken = localStorage.getItem("access-token");
+
+  const a = async () => {
+    const data = await getNickname();
+    console.log(data);
+  };
+
+  useEffect(() => {
+    a();
+  }, []);
 
   return (
     <BrowserRouter>
@@ -15,8 +25,7 @@ const App = () => {
           element={accessToken ? <Home /> : <Navigate replace to="/login" />}
         ></Route>
         <Route path="/login" element={<Login />}></Route>
-
-        {/* <Route path="*" element={<NotFound />}></Route> */}
+        <Route path="/login/success" element={<LoginSuccess />}></Route>
       </Routes>
     </BrowserRouter>
   );

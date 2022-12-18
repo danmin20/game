@@ -1,5 +1,6 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Response } from 'express';
 import { GoogleUser, JwtPayload } from 'src/common/type';
 import { AuthService } from './auth.service';
 
@@ -17,16 +18,20 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleCallback(
     @Req() req: Request & { user: GoogleUser },
-    @Res() res: any,
+    @Res() res: Response,
   ) {
     const user = await this.authService.findByProviderIdOrSave(req.user);
 
     const payload: JwtPayload = { sub: user.id, email: user.email };
 
     const { accessToken } = this.authService.getToken(payload);
-    console.log('accessToken', accessToken);
-    if (accessToken)
-      res.redirect('http://localhost:5173/login/success/' + accessToken);
-    else res.redirect('http://localhost:5173/login/failure');
+
+    if (accessToken) {
+      res.redirect(
+        'http://localhost:5173/login/success?accessToken=' + accessToken,
+      );
+    } else {
+      res.redirect('http://localhost:5173/login/failure');
+    }
   }
 }

@@ -1,5 +1,12 @@
+import { googleLogin } from "../api/auth";
+
 const Login = () => {
   console.log("asdf", import.meta.env.VITE_SERVER_URI);
+
+  const handleLogin = async () => {
+    const data = await googleLogin();
+    console.log("data", data);
+  };
   return (
     <div>
       <a
@@ -8,6 +15,7 @@ const Login = () => {
       >
         google login
       </a>
+      <button onClick={handleLogin}>asdf</button>
     </div>
   );
 };
