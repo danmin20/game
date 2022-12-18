@@ -1,21 +1,11 @@
-import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { getNickname } from "./api/user";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import LoginSuccess from "./pages/LoginSuccess";
+import SignUp from "./pages/SignUp";
 
 const App = () => {
   const accessToken = localStorage.getItem("access-token");
-
-  const a = async () => {
-    const data = await getNickname();
-    console.log(data);
-  };
-
-  useEffect(() => {
-    a();
-  }, []);
 
   return (
     <BrowserRouter>
@@ -26,6 +16,7 @@ const App = () => {
         ></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/login/success" element={<LoginSuccess />}></Route>
+        <Route path="/sign-up" element={<SignUp />}></Route>
       </Routes>
     </BrowserRouter>
   );

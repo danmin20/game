@@ -1,13 +1,22 @@
-import { useSearchParams } from "react-router-dom";
-import { axiosInstance } from "../api";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useGetUserInfo } from "../hooks/api/user";
 
 const LoginSuccess = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const accessToken = searchParams.get("accessToken");
   localStorage.setItem("access-token", accessToken ?? "");
-  axiosInstance.defaults.headers.common["Authorization"] = accessToken;
 
-  return <div>asdf</div>;
+  const { data, status } = useGetUserInfo();
+  console.log(data);
+
+  if (status === "success") {
+    if (data.user.nickname) navigate("/");
+    navigate("/sign-up");
+  }
+
+  return <div>login success</div>;
 };
 
 export default LoginSuccess;

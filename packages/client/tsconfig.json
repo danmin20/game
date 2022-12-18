@@ -9,6 +9,6 @@
     "noEmit": true,
     "outDir": "./dist"
   },
-  "include": ["src"],
+  "include": ["src", "src/hooks/api/user.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

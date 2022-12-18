@@ -35,4 +35,10 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { email } });
     return user;
   }
+
+  async changeUserNickname(email: string, nickname: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    const updatedUser = await this.userRepository.save({ ...user, nickname });
+    return updatedUser;
+  }
 }
