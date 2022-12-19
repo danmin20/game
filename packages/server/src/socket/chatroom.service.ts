@@ -1,47 +1,47 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Socket } from 'socket.io';
 import { SOCKET_EVENT } from 'src/common/const';
-import { v4 as uuidv4 } from 'uuid';
-import { chatRoomListDTO } from './dto/chat.dto';
+import { Chatroom } from 'src/entity/chatroom.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class ChatRoomService {
-  private chatRoomList: Record<string, chatRoomListDTO>;
-  constructor() {
-    this.chatRoomList = {
-      'room:lobby': {
-        roomId: 'room:lobby',
-        roomName: '로비',
-        cheifId: null,
-      },
-    };
-  }
+export class ChatroomService {
+  constructor(
+    @InjectRepository(Chatroom)
+    private readonly chatroomRepository: Repository<Chatroom>,
+  ) {}
 
-  createChatRoom(client: Socket, roomName: string): void {
-    const roomId = `room:${uuidv4()}`;
+  async createChatroom(client: Socket, roomName: string): Promise<Chatroom> {
     const nickname: string = client.data.nickname;
     client.emit(SOCKET_EVENT.RECEIVE_MESSAGE, {
       id: null,
       nickname: '안내',
       message: '"' + nickname + '"님이 "' + roomName + '"방을 생성하였습니다.',
     });
-    // return this.chatRoomList[roomId];
-    this.chatRoomList[roomId] = {
-      roomId,
-      cheifId: client.id,
-      roomName,
-    };
-    client.data.roomId = roomId;
+
+    const chatroom = new Chatroom();
+    chatroom.hostId = client.id;
+    chatroom.roomName = roomName;
+
+    const newChatroom = await this.chatroomRepository.save({
+      hostId: client.id,
+      roomName: roomName,
+    });
+
+    client.data.roomId = newChatroom.id;
     client.rooms.clear();
-    client.join(roomId);
+    client.join(newChatroom.id);
+
+    return newChatroom;
   }
 
-  enterChatRoom(client: Socket, roomId: string) {
+  async enterChatroom(client: Socket, roomId: string) {
     client.data.roomId = roomId;
     client.rooms.clear();
     client.join(roomId);
     const { nickname } = client.data;
-    const { roomName } = this.getChatRoom(roomId);
+    const { roomName } = await this.getChatroom(roomId);
     client.to(roomId).emit(SOCKET_EVENT.RECEIVE_MESSAGE, {
       id: null,
       nickname: '안내',
@@ -49,7 +49,7 @@ export class ChatRoomService {
     });
   }
 
-  exitChatRoom(client: Socket, roomId: string) {
+  exitChatroom(client: Socket, roomId: string) {
     client.data.roomId = `room:lobby`;
     client.rooms.clear();
     client.join(`room:lobby`);
@@ -61,15 +61,29 @@ export class ChatRoomService {
     });
   }
 
-  getChatRoom(roomId: string): chatRoomListDTO {
-    return this.chatRoomList[roomId];
+  async getChatroom(roomId: string) {
+    const chatroom = await this.chatroomRepository.findOne({
+      where: { id: roomId },
+    });
+
+    return chatroom;
   }
 
-  getChatRoomList(): Record<string, chatRoomListDTO> {
-    return this.chatRoomList;
+  async getChatrooms() {
+    const chatrooms = await this.chatroomRepository.find({
+      withDeleted: false,
+    });
+    return chatrooms;
   }
 
-  deleteChatRoom(roomId: string) {
-    delete this.chatRoomList[roomId];
+  async deleteChatroom(roomId: string) {
+    const chatroom = await this.chatroomRepository.findOne({
+      where: { id: roomId },
+    });
+
+    await this.chatroomRepository.save({
+      ...chatroom,
+      deletedAt: new Date(),
+    });
   }
 }

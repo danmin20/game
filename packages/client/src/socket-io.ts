@@ -1,12 +1,13 @@
 import { createContext } from "react";
 import { io } from "socket.io-client";
+import { getUserInfo } from "./api/user";
 import { SOCKET_EVENT } from "./const";
 
 export const socket = io("localhost:80", {
   transports: ["websocket"],
 });
 
-export const myInfo = {
+export const chatUserInfo = {
   nickname: "",
   id: "",
   room: {
@@ -15,20 +16,21 @@ export const myInfo = {
   },
 };
 
-socket.on("connect", () => {
+socket.on("connect", async () => {
   console.log("socket server connected.");
 
-  //연결 완료 후 로컬스토리지를 확인하여 닉네임 세팅
-  const nickname = localStorage.getItem("nickname");
+  const userInfo = await getUserInfo();
+
   socket.emit(
     SOCKET_EVENT.SET_INIT,
-    { nickname },
-    (response: typeof myInfo) => {
-      myInfo.nickname = response.nickname;
-      myInfo.id = socket.id;
-      myInfo.room = response.room;
+    { nickname: userInfo.user.nickname },
+    (response: typeof chatUserInfo) => {
+      chatUserInfo.nickname = response.nickname;
+      chatUserInfo.id = socket.id;
+      chatUserInfo.room = response.room;
     }
   );
+
   socket.emit(SOCKET_EVENT.GET_CHATROOM_LIST, null);
 });
 
@@ -43,7 +45,6 @@ export const initSocketConnection = () => {
 
 export const SocketContext = createContext(socket);
 
-// 소켓 연결을 끊음
 export const disconnectSocket = () => {
   if (socket == null || socket.connected === false) {
     return;

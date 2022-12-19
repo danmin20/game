@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Chatroom from "./pages/Chatroom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import LoginSuccess from "./pages/LoginSuccess";
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/login" element={<Login />}></Route>
         <Route path="/login/success" element={<LoginSuccess />}></Route>
         <Route path="/sign-up" element={<SignUp />}></Route>
+        <Route path="/chatroom/:id" element={<Chatroom />}></Route>
       </Routes>
     </BrowserRouter>
   );

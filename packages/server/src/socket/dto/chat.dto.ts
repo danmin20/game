@@ -6,8 +6,8 @@ export class setInitDTO {
   };
 }
 
-export class chatRoomListDTO {
+export class chatroomListDTO {
   roomId: string;
-  cheifId: string;
+  hostId: string;
   roomName: string;
 }
