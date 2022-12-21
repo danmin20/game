@@ -12,7 +12,7 @@ export class ChatroomService {
     private readonly chatroomRepository: Repository<Chatroom>,
   ) {}
 
-  async createChatroom(client: Socket, roomName: string): Promise<Chatroom> {
+  async createChatroom(client: Socket, roomName: string) {
     const nickname: string = client.data.nickname;
     client.emit(SOCKET_EVENT.RECEIVE_MESSAGE, {
       id: null,
@@ -25,9 +25,7 @@ export class ChatroomService {
       roomName: roomName,
     });
 
-    client.data.roomId = newChatroom.id;
-    client.rooms.clear();
-    client.join(newChatroom.id);
+    await this.enterChatroom(client, newChatroom.id);
 
     return newChatroom;
   }
@@ -38,19 +36,43 @@ export class ChatroomService {
     client.join(roomId);
     const { nickname } = client.data;
     const chatroom = await this.getChatroom(roomId);
-    console.log(chatroom);
+
+    this.chatroomRepository.save({
+      ...chatroom,
+      numOfP: chatroom.numOfP + 1,
+    });
+
     const { roomName } = chatroom;
     client.to(roomId).emit(SOCKET_EVENT.RECEIVE_MESSAGE, {
       id: null,
       nickname: '안내',
       message: `"${nickname}"님이 "${roomName}"방에 접속하셨습니다.`,
     });
+
+    return {
+      id: roomId,
+      roomName,
+    };
   }
 
-  exitChatroom(client: Socket, roomId: string) {
+  async exitChatroom(client: Socket, roomId: string) {
     client.data.roomId = `room:lobby`;
     client.rooms.clear();
     client.join(`room:lobby`);
+
+    const chatroom = await this.chatroomRepository.findOne({
+      where: { id: roomId },
+    });
+    const afterNumOfP = chatroom.numOfP - 1;
+    if (afterNumOfP > 0) {
+      await this.chatroomRepository.save({
+        ...chatroom,
+        numOfP: afterNumOfP,
+      });
+    } else {
+      this.deleteChatroom(roomId);
+    }
+
     const { nickname } = client.data;
     client.to(roomId).emit(SOCKET_EVENT.RECEIVE_MESSAGE, {
       id: null,

@@ -1,11 +1,5 @@
-import { useEffect, useState } from "react";
-import {
-  disconnectSocket,
-  initSocketConnection,
-  chatUserInfo,
-  socket,
-  SocketContext,
-} from "../socket-io";
+import { useState } from "react";
+import { chatUserInfo, socket, SocketContext } from "../socket-io";
 import { SOCKET_EVENT } from "../const";
 import { useGetUserInfo } from "../hooks/api/user";
 import { useNavigate } from "react-router-dom";
@@ -23,18 +17,22 @@ const Home = () => {
     if (!roomName) {
       return false;
     }
-    socket.emit(SOCKET_EVENT.CREATE_CHATROOM, roomName, (res: Chatroom) => {
-      if (!res) return;
-      socket.emit(SOCKET_EVENT.GET_CHATROOM_LIST);
-      navigate(`/chatroom/${res.id}`);
-    });
-    socket.emit(SOCKET_EVENT.GET_CHATROOM_LIST);
+    socket.emit(
+      SOCKET_EVENT.CREATE_CHATROOM,
+      roomName,
+      (response: Chatroom) => {
+        if (!response) return;
+        socket.emit(SOCKET_EVENT.GET_CHATROOM_LIST);
+        navigate(`/chatroom/${response.id}`);
+      }
+    );
   };
 
   const enterChatroom = (roomId: string) => {
     socket.emit(SOCKET_EVENT.ENTER_CHATROOM, roomId, (response: Chatroom) => {
       if (!response) return;
       chatUserInfo.room = response;
+      navigate(`/chatroom/${roomId}`);
     });
   };
 
@@ -42,21 +40,13 @@ const Home = () => {
     setChatroomList([...Object.values(response)]);
   });
 
-  useEffect(() => {
-    initSocketConnection();
-
-    return () => {
-      disconnectSocket();
-    };
-  }, []);
-
   return (
     <SocketContext.Provider value={socket}>
       <div>안녕하세요, {data?.user.nickname}님!</div>
       <button onClick={createChatroom}>채팅방 생성</button>
       {chatroomList.map((c) => (
         <div key={c.id}>
-          {c.roomName}{" "}
+          {c.roomName} {c.numOfP}명
           {c.roomName !== "로비" && (
             <button onClick={() => enterChatroom(c.id)}>입장</button>
           )}

@@ -1,12 +1,22 @@
+import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Chatroom from "./pages/Chatroom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import LoginSuccess from "./pages/LoginSuccess";
 import SignUp from "./pages/SignUp";
+import { disconnectSocket, initSocketConnection } from "./socket-io";
 
 const App = () => {
   const accessToken = localStorage.getItem("access-token");
+
+  useEffect(() => {
+    initSocketConnection();
+
+    return () => {
+      disconnectSocket();
+    };
+  }, []);
 
   return (
     <BrowserRouter>

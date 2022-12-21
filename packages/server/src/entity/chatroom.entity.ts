@@ -21,6 +21,9 @@ export class Chatroom extends BaseEntity {
   @Column({ type: 'varchar', length: 30, comment: 'roomName' })
   roomName: string;
 
+  @Column({ type: 'int', default: 0, comment: 'numberOfPeople' })
+  numOfP: number;
+
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;
 

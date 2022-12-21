@@ -37,7 +37,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       roomId !== 'room:lobby' &&
       !this.server.sockets.adapter.rooms.get(roomId)
     ) {
-      this.ChatroomService.deleteChatroom(roomId);
+      // this.ChatroomService.deleteChatroom(roomId);
       this.server.emit(
         SOCKET_EVENT.GET_CHATROOM_LIST,
         await this.ChatroomService.getChatrooms(),
@@ -48,14 +48,12 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   //메시지가 전송되면 모든 유저에게 메시지 전송
   @SubscribeMessage(SOCKET_EVENT.SEND_MESSAGE)
-  sendMessage(client: Socket, message: string) {
-    client.rooms.forEach((roomId) =>
-      client.to(roomId).emit(SOCKET_EVENT.RECEIVE_MESSAGE, {
-        id: client.id,
-        nickname: client.data.nickname,
-        message,
-      }),
-    );
+  sendMessage(client: Socket, data: { messageValue: string; roomId: string }) {
+    client.to(data.roomId ?? 'room:lobby').emit(SOCKET_EVENT.RECEIVE_MESSAGE, {
+      id: client.id,
+      nickname: client.data.nickname,
+      message: data.messageValue,
+    });
   }
 
   //처음 접속시 닉네임 등 최초 설정
@@ -96,14 +94,6 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //채팅방 생성하기
   @SubscribeMessage(SOCKET_EVENT.CREATE_CHATROOM)
   async createChatroom(client: Socket, roomName: string) {
-    //이전 방이 만약 나 혼자있던 방이면 제거
-    if (
-      client.data.roomId !== 'room:lobby' &&
-      this.server.sockets.adapter.rooms.get(client.data.roomId).size == 1
-    ) {
-      this.ChatroomService.deleteChatroom(client.data.roomId);
-    }
-
     const chatroom = await this.ChatroomService.createChatroom(
       client,
       roomName,
@@ -119,18 +109,14 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (client.rooms.has(roomId)) {
       return;
     }
-    //이전 방이 만약 나 혼자있던 방이면 제거
-    if (
-      client.data.roomId !== 'room:lobby' &&
-      this.server.sockets.adapter.rooms.get(client.data.roomId).size == 1
-    ) {
-      this.ChatroomService.deleteChatroom(client.data.roomId);
-    }
-    this.ChatroomService.enterChatroom(client, roomId);
+    const chatroom = await this.ChatroomService.enterChatroom(client, roomId);
 
-    return {
-      roomId: roomId,
-      roomName: (await this.ChatroomService.getChatroom(roomId)).roomName,
-    };
+    return chatroom;
+  }
+
+  //채팅방 나가기
+  @SubscribeMessage(SOCKET_EVENT.EXIT_CHATROOM)
+  async exitChatroom(client: Socket, roomId: string) {
+    await this.ChatroomService.exitChatroom(client, roomId);
   }
 }

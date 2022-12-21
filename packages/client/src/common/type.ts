@@ -11,6 +11,7 @@ export type Chatroom = {
   id: string;
   hostId: string;
   roomName: string;
+  numOfP: number;
 };
 
 export type Message = {

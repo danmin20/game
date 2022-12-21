@@ -11,12 +11,12 @@ const ChatBox = () => {
     setValue: setMessageValue,
     onChange: onChangeMessage,
   } = useInput("");
-  const { id } = useParams();
+  const { id: roomId } = useParams();
 
   const [messageList, setMessageList] = useState<Message[]>([]);
 
   const handleSendMessage = () => {
-    socket.emit(SOCKET_EVENT.SEND_MESSAGE, messageValue, id);
+    socket.emit(SOCKET_EVENT.SEND_MESSAGE, { messageValue, roomId });
     setMessageValue("");
   };
 
@@ -27,8 +27,8 @@ const ChatBox = () => {
   return (
     <div>
       <div style={{ border: "1px solid #000" }}>
-        {messageList.map((m) => (
-          <div key={m.id}>
+        {messageList.map((m, idx) => (
+          <div key={idx}>
             {m.nickname}: {m.message}
           </div>
         ))}
