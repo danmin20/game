@@ -15,7 +15,7 @@ export class Chatroom extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 30, comment: 'hostId' })
+  @Column({ type: 'varchar', length: 50, comment: 'hostId' })
   hostId: string;
 
   @Column({ type: 'varchar', length: 30, comment: 'roomName' })

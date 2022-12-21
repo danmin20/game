@@ -1,4 +1,5 @@
 export class setInitDTO {
+  id: string;
   nickname: string;
   room: {
     roomId: string;

@@ -20,12 +20,8 @@ export class ChatroomService {
       message: '"' + nickname + '"님이 "' + roomName + '"방을 생성하였습니다.',
     });
 
-    const chatroom = new Chatroom();
-    chatroom.hostId = client.id;
-    chatroom.roomName = roomName;
-
     const newChatroom = await this.chatroomRepository.save({
-      hostId: client.id,
+      hostId: client.data.id,
       roomName: roomName,
     });
 
@@ -41,7 +37,9 @@ export class ChatroomService {
     client.rooms.clear();
     client.join(roomId);
     const { nickname } = client.data;
-    const { roomName } = await this.getChatroom(roomId);
+    const chatroom = await this.getChatroom(roomId);
+    console.log(chatroom);
+    const { roomName } = chatroom;
     client.to(roomId).emit(SOCKET_EVENT.RECEIVE_MESSAGE, {
       id: null,
       nickname: '안내',

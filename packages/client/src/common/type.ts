@@ -8,7 +8,8 @@ export type User = {
 };
 
 export type Chatroom = {
-  roomId: string;
+  id: string;
+  hostId: string;
   roomName: string;
 };
 

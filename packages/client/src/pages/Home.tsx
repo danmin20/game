@@ -23,28 +23,22 @@ const Home = () => {
     if (!roomName) {
       return false;
     }
-    socket.emit(
-      SOCKET_EVENT.CREATE_CHATROOM,
-      roomName,
-      (res: { roomId: string; roomName: string }) => {
-        if (!res) return;
-        socket.emit(SOCKET_EVENT.GET_CHATROOM_LIST);
-        // navigate(`/chatroom/${res.roomId}`);
-      }
-    );
+    socket.emit(SOCKET_EVENT.CREATE_CHATROOM, roomName, (res: Chatroom) => {
+      if (!res) return;
+      socket.emit(SOCKET_EVENT.GET_CHATROOM_LIST);
+      navigate(`/chatroom/${res.id}`);
+    });
     socket.emit(SOCKET_EVENT.GET_CHATROOM_LIST);
   };
 
   const enterChatroom = (roomId: string) => {
     socket.emit(SOCKET_EVENT.ENTER_CHATROOM, roomId, (response: Chatroom) => {
-      console.log("asdf", response);
       if (!response) return;
       chatUserInfo.room = response;
     });
   };
 
   socket.on(SOCKET_EVENT.GET_CHATROOM_LIST, (response: Chatroom[]) => {
-    console.log("chatroomList", response);
     setChatroomList([...Object.values(response)]);
   });
 
@@ -61,10 +55,10 @@ const Home = () => {
       <div>안녕하세요, {data?.user.nickname}님!</div>
       <button onClick={createChatroom}>채팅방 생성</button>
       {chatroomList.map((c) => (
-        <div key={c.roomId}>
+        <div key={c.id}>
           {c.roomName}{" "}
           {c.roomName !== "로비" && (
-            <button onClick={() => enterChatroom(c.roomId)}>입장</button>
+            <button onClick={() => enterChatroom(c.id)}>입장</button>
           )}
         </div>
       ))}

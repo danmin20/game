@@ -13,7 +13,7 @@ const LoginSuccess = () => {
 
   if (status === "success") {
     if (data.user.nickname) navigate("/");
-    navigate("/sign-up");
+    else navigate("/sign-up");
   }
 
   return <div>login success</div>;

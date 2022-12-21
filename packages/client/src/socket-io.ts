@@ -8,10 +8,10 @@ export const socket = io("localhost:80", {
 });
 
 export const chatUserInfo = {
-  nickname: "",
   id: "",
+  nickname: "",
   room: {
-    roomId: "",
+    id: "",
     roomName: "",
   },
 };
@@ -23,10 +23,10 @@ socket.on("connect", async () => {
 
   socket.emit(
     SOCKET_EVENT.SET_INIT,
-    { nickname: userInfo.user.nickname },
+    { ...userInfo.user },
     (response: typeof chatUserInfo) => {
-      chatUserInfo.nickname = response.nickname;
       chatUserInfo.id = socket.id;
+      chatUserInfo.nickname = response.nickname;
       chatUserInfo.room = response.room;
     }
   );

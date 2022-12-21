@@ -7,6 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { SOCKET_EVENT } from 'src/common/const';
+import { User } from 'src/entity/user.entity';
 import { setInitDTO } from 'src/socket/dto/chat.dto';
 import { ChatroomService } from './chatroom.service';
 
@@ -59,11 +60,13 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   //처음 접속시 닉네임 등 최초 설정
   @SubscribeMessage(SOCKET_EVENT.SET_INIT)
-  setInit(client: Socket, data: setInitDTO): setInitDTO {
+  setInit(client: Socket, data: User): setInitDTO {
     // 이미 최초 세팅이 되어있는 경우 패스
     if (client.data.isInit) {
       return;
     }
+
+    client.data.id = data.id;
 
     client.data.nickname = data.nickname
       ? data.nickname
@@ -72,6 +75,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.data.isInit = true;
 
     return {
+      id: client.data.id,
       nickname: client.data.nickname,
       room: {
         roomId: 'room:lobby',

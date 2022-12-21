@@ -10,6 +10,7 @@ const SignUp = () => {
 
   const handleChangeNickname = async () => {
     const data = await putUserInfo(nicknameValue);
+
     console.log("data", data);
 
     if (data.user.nickname) {
